@@ -1,7 +1,9 @@
 # React
 
-## References
-[freeCodeCamp React](https://www.freecodecamp.org/learn/front-end-development-libraries/react/)
+[freeCodeCamp React](https://www.freecodecamp.org/learn/front-end-development-libraries/react/)  
+
+## Design
+![react-redux](./react-redux.drawio.svg)
 
 ## Render
 In client (aka front-end)

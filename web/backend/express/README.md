@@ -104,3 +104,29 @@ app.get(
   (req, resp) => { const { time } = req; ... }
 )
 ```
+## Handling errors
+```
+const express = require('express');
+const app = express();
+const createError = require('http-errors');
+
+app.get('/users/:id', (req, res, next) => {
+  const id = Number.parseInt(req.params.id);
+  if (isNaN(id)) { next(createError.BadRequest()); return } // or throw(createError.BadRequest())
+  
+  db.query({ sql, values }, (err, results) => {
+    if (!results.length) { err = createError.NotFound() }
+    if (err?.code === 'ER_DUP_ENTRY') { err = createError.Conflict(err.sqlMessage) }
+
+    if (err) { next(err) }
+    else { res.json(results) }
+  });
+});
+
+app.use((err, req, res, next) => {
+    if (err?.sqlMessage) { err = createError.InternalServerError(sqlMessage) }
+    if (!err?.status) { err = createError.InternalServerError(err) }
+    const { status, message } = { ...err, ...err.constructor.prototype };
+    res.status(status).json({ status, message });
+});
+```

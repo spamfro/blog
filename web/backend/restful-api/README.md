@@ -3,6 +3,7 @@
 ## References
 
 [HTTP methods](https://www.restapitutorial.com/lessons/httpmethods.html)
+[RESTful web API design](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design)
 
 ## Create
 ```
