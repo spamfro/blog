@@ -7,33 +7,33 @@
 
 ## Setup environment
 Install Python 3
-```
-sudo apt python3 python3-pip
+```bash
+sudo apt install python3 python3-pip
 export PATH="$PATH:/home/$USER/.local/bin"
 ```
 Install Jupyter notebook
-```
+```bash
 pip3 install notebook
 jupyter notebook --ip 0.0.0.0 --port 8888 --no-browser
 ```
 Install python auto format
-```
+```bash
 pip3 install autopep8
 ```
 
 ## Install dependencies and run apps
-```
+```bash
 pip3 install -r requirements.txt
 PYTHONPATH=path/to/lib python3 path/to/src/app.py x y z
 ```
 
 ## Reflection
-```
+```python
 type(x) -> <class X>
 ```
 
 ## Variable args
-```
+```python
 fn = lambda *args: args
 fn(x,...) -> (x,...)
 
@@ -42,15 +42,32 @@ fn(x=y,...) -> {'x':y,...}
 ```
 
 ## For-loop idioms
-```
+```python
 for i in range(n): ...
 for i in range(b,e,k): ...
 for x in itx: ...
 for i,x in enumerate(itx): ...
 ```
 
-## Comprehensions
+## Recursive Iterator
+```python
+class Trie:
+  def __init__(self):
+    self.root = [[None]*26, False]
+  def __str__(self):
+    return str([x for x in self])
+  def __iter__(self):
+    def dfs(u, x):
+      if u[1]:
+        yield x
+      for i, u in enumerate(u[0]):
+        if u:
+          yield from dfs(u, x+chr(i+ord('a')))
+    return dfs(self.root, '')
 ```
+
+## Comprehensions
+```python
 list(fn(x) for x in itx if p(x))            [fn(x) for x in itx if p(x)]
 tuple(fn(x) for x in itx if p(x))           (fn(x) for x in itx if p(x))
 set(fn(x) for x in itx if p(x))             {fn(x) for x in itx if p(x)}
@@ -58,7 +75,7 @@ dict((key(x),fn(x)) for x in itx if p(x))   {key(x):fn(x) for x in itx if p(x)}
 ```
 
 ## Regular expressions
-```
+```python
 (parse = re.compile(r).search)(s) -> None | m
 m.group(0) -> s           -- matched substring
 m.group(i) -> s           -- matched group i
@@ -66,7 +83,7 @@ m.groups() -> (s,...)     -- matched groups
 ```
 
 ## Random
-```
+```python
 random.randint(l, r) -> n                   l <= n <= r
 random.choice('abcd') -> 'a' | 'b' | ...
 random.choices('abcd', k=k) -> ['a',...]
@@ -78,16 +95,16 @@ string.ascii_lowercase
 ```
 
 ## Functional
-```
+```python
 map(fn= x->y, itx) -> ity
 filter(p= x->t, itx) -> itx
-(fold = functools.reduce)(fn= (y,x)->y', itx, y0) -> y
+(fold = functools.reduce)(fn= (y,x)->y1, itx, y0) -> y1
 (flatten = itertools.chain.from_iterable)(itxs) -> itx
 (flatmap = lambda fn,xs: flatten(map(fn,xs)))(fn= x->[y], itx) -> ity
 (slice = itertools.islice)(itx,b,e,k) -> itx
 (pair = itertools.pairwise)(itx) -> it (xi,xi+1)
 (group = itertools.groupby)(sorted(itx), key=x->y) -> it (y,itx)
-(scan = itertools.accumulate)(itx, func= (x',x)->x", initial=None) -> itx'
+(scan = itertools.accumulate)(itx, func= (a,x)->a1, initial=None) -> ita
 
 (pipe = lambda *fns: reduce(lambda g,f: lambda x: f(g(x)), fns))(fn,...) -> fn
 
@@ -96,10 +113,10 @@ pipe(lambda x:10*x, str, lambda x:'a'+x)(1) -> 'a10'
 ```
 
 ## List / Sequence
-```
+```python
 xs[i]
 xs[b:e:k]
-xs[b:e] = xs'
+xs[b:e] = xs1
 del xs[b:e]
 n * [None]
 
@@ -110,7 +127,7 @@ len(xs) -> n
 min/max(xs) -> x
 
 xs.sort(key= x->y, reverse= t)
-sorted(itx, key= x->y, reverse= t) -> xs'
+sorted(itx, key= x->y, reverse= t) -> xs1
 
 xs.reverse()
 reversed(xs) -> itx
@@ -121,22 +138,23 @@ xs.count(x) -> n
 xs.append(x)      xs[n:n] = [x]
 xs.extend(itx)    xs[n:] = itx, xs += itx
 xs.insert(i,x)    xs[i:i] = [x]
+xs.pop(i)         xs[i:i+1] = []
 xs.remove(x)      del xs[s.index(x)]   ValueError
-xs.copy() -> xs'  xs' = xs[:]
+xs.copy() -> xs1  xs1 = xs[:]
 xs.clear()        del xs[:]
 ```
 
 ## String
-```
+```python
 str(x) -> s       x.__str__() -> s
 
 f'...{expr:n}...' -> s
 '...{i}...'.format(x,...) -> s
 '...{x}'.format_map({x:y,...}) -> s
 
-s.center(n,ch) -> s'
-s.l/rjust(n,ch) -> s'
-s.l/r/strip(chs) -> s'
+s.center(n,ch) -> s1
+s.l/rjust(n,ch) -> s1
+s.l/r/strip(chs) -> s1
 
 len(s) -> n
 
@@ -150,22 +168,22 @@ bs.decode('utf8') -> s
 chr(s) -> n
 ord(n) -> s
 
-s.removeprefix/suffix(u) -> s'
+s.removeprefix/suffix(u) -> s1
 s.starts/endswith(u,b,e) -> t
 
-s.replace(u',u",n)
+s.replace(u1,u2,n)
 
-s.r/split(u) -> [s',...]
-s.splitlines(keeprn= t) -> [s',...]
-s.r/partittion(u) -> (s',u,s")
-s.join(itx) -> s'
+s.r/split(u) -> [s1,...]
+s.splitlines(keeprn= t) -> [s1,...]
+s.r/partition(u) -> (s1,u,s2)
+s.join(itx) -> s1
 
-s.upper/lower() -> s'
-s.swapcase/title/capitalize() -> s'
+s.upper/lower() -> s1
+s.swapcase/title/capitalize() -> s1
 ```
 
 ## Bytes, bytearray, memoryview
-```
+```python
 byte(src, encoding= 'utf8')         -- immutable
 bytearray(src, encoding= 'utf8')    -- mutable     
 
@@ -179,8 +197,10 @@ memoryview(bs) -> xs
 ```
 
 ## Set
-```
+```python
 set(itx) -> s
+
+list(s) -> [k]
 
 x in s
 x not in s
@@ -188,23 +208,23 @@ x not in s
 s.isdisjoint(u) -> t
 s.issubset(u) -> t                  s <= u,   s < u
 s.issuperset(u) -> t                s >= u,   s > u
-s.union(u,...) -> s'                s | u | ...
-s.intersection(u,...) ->s'          s & u & ...
-s.difference(u,...) -> s'           s - u - ...
+s.union(u,...) -> s1                s | u | ...
+s.intersection(u,...) ->s1          s & u & ...
+s.difference(u,...) -> s1           s - u - ...
 s.symmetric_difference(u)           s ^ u
 s.update(u,...)                     s |= u | ...
 s.symmetric_difference_update(u)    s ^= u
 
-s.copy() -> s'
+s.copy() -> s1
 s.add(x)
-s.remove(x)     KeyError
+s.remove(x)     # KeyError
 s.discard(x)
 s.pop()
 s.clear()
 ```
 
 ## Dictionary
-```
+```python
 dict( it ('x',y) )
 dict(x=y,...)
 
@@ -215,11 +235,11 @@ d.keys() -> it x
 d.items() -> it (x,y)
 d.values() -> it y
 
-d[x] -> y               KeyError
+d[x] -> y                # KeyError
 d[x] = y
-del d[x]                KeyError
+del d[x]                 # KeyError
 d.pop(x, y0) -> y|y0
 
-d.setdefault(x,y0) -> y  --mutates
+d.setdefault(x,y0) -> y  # mutates
 d.get(x,y0) -> y|y0
 ```
